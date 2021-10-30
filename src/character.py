@@ -1,4 +1,5 @@
 import pygame
+from pygame import constants
 import pygame.display
 import pygame.draw
 import pygame.time
@@ -11,3 +12,4 @@ class GameCharacter:
     # Clockwise: 0 = left, 1 = right
     self.direction = [False, False]
     self.color = [255, 255, 255]
+    self.movementSpeed = 4
