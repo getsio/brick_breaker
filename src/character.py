@@ -3,23 +3,42 @@ from pygame import Surface, constants
 import pygame.display
 import pygame.draw
 import pygame.time
+from src.constants import SIZE, CHAR_LENGTH, CHAR_HEIGTH, CHAR_MOVESPEED
 from src.game_object import GameObject
 
 class GameCharacter(GameObject):
-  def __init__(self, x: int, y: int, color: list[int], side_a: int, side_b: int):
-    super().__init__(x, y, color)
+  def __init__(self, color: list[int]):
+    super().__init__(0, 0, color)
     # Clockwise: 0 = left, 1 = right
     self.direction = [False, False]
-    self.movementSpeed = 4
-    self.side_a = side_a
-    self.side_b = side_b
-    self.form = (self.x, self.y, self.side_a, self.side_b)
+    self.movement_speed = CHAR_MOVESPEED
+    self.side_a = CHAR_LENGTH
+    self.side_b = CHAR_HEIGTH
+    self.init()
 
   def update(self) -> None:
-    pass
-
-  def move(self) -> None:
-    pass
+    self.__move()
 
   def draw(self, screen: Surface) -> None:
     pygame.draw.rect(screen, self.color, self.form)
+
+  def init(self):
+    self.x = (SIZE[0] / 2) - (self.side_a / 2)
+    self.y = SIZE[1] - 100
+
+    self.form = (self.x, self.y, self.side_a, self.side_b)
+
+  def __move(self):
+    if self.direction[0] and self.x > 0:
+      self.x -= self.movement_speed
+    elif self.direction[1] and self.x < (SIZE[0] - self.side_a):
+      self.x += self.movement_speed
+
+    self.__correct_x()
+    self.form = (self.x, self.y, self.side_a, self.side_b)
+
+  def __correct_x(self):
+    if self.x < 0:
+        self.x = 0
+    elif self.x > SIZE[0] - self.side_a:
+        self.x = SIZE[0] - self.side_a

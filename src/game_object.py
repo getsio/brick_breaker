@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-
 from pygame import Surface
 
 class GameObject(metaclass = ABCMeta):

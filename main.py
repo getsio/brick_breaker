@@ -3,11 +3,12 @@ import pygame.display
 import pygame.draw
 import pygame.time
 import pygame.event
+from src.constants import SIZE
 from src.game_object import GameObject
 from src.character import GameCharacter
 
 class Game:
-  def __init__(self, fps: int, size: tuple[int], game_objects: list[GameObject], fullscreen: bool = False) -> None:
+  def __init__(self, fps: int, game_character: GameCharacter, game_objects: list[GameObject], fullscreen: bool = False) -> None:
     """This class represents a pygame window.
 
     Args:
@@ -18,8 +19,9 @@ class Game:
     pygame.init()
     self.fps: int = fps
     self.game_running: bool = True
-    self.size: tuple[int] = size
+    self.size: tuple[int] = SIZE
     self.clock: pygame.time.Clock = pygame.time.Clock()
+    self.game_character: GameCharacter = game_character
     self.game_objects: list[GameObject] = game_objects
     self.__init_screen(fullscreen)
 
@@ -28,6 +30,7 @@ class Game:
     """
     while self.game_running:
       self.__check_game_events(pygame.event.get())
+      self.update()
       self.draw()
       self.clock.tick(self.fps)
 
@@ -69,6 +72,10 @@ class Game:
         pygame.display.set_mode(self.size)
       else:
         pygame.display.set_mode(self.size, pygame.FULLSCREEN)
+    elif ev.key == pygame.K_a:
+      self.game_character.direction[0] = True
+    elif ev.key == pygame.K_d:
+      self.game_character.direction[1] = True
 
   def __check_keyup_events(self, ev: pygame.event.Event) -> None:
     """Checks what Key was released.
@@ -76,17 +83,27 @@ class Game:
     Args:
         ev (pygame.event.Event): Pygame event
     """
-    pass
+    if ev.key == pygame.K_a:
+      self.game_character.direction[0] = False
+    elif ev.key == pygame.K_d:
+      self.game_character.direction[1] = False
+
+  def update(self):
+    self.game_character.update()
+
+    for game_object in self.game_objects:
+      game_object.update()
 
   def draw(self):
     self.screen.fill((0, 0, 0))
+    self.game_character.draw(self.screen)
     for game_object in self.game_objects:
         game_object.draw(self.screen)
     
     pygame.display.flip()
 
 if __name__ == '__main__':
-  character = GameCharacter(600, 750, [255, 255, 255], 100, 10)
-  game_objects = [character]
-  game = Game(60, (1200, 800), game_objects)
+  character = GameCharacter([255, 255, 255])
+  game_objects = []
+  game = Game(60, character, game_objects)
   game.run()
