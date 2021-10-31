@@ -3,9 +3,9 @@ from pygame import Surface, constants
 import pygame.display
 import pygame.draw
 import pygame.time
-from src.game_object import Game_Object
+from src.game_object import GameObject
 
-class GameCharacter(Game_Object):
+class GameCharacter(GameObject):
   def __init__(self, x: int, y: int, color: list[int], side_a: int, side_b: int):
     super().__init__(x, y, color)
     # Clockwise: 0 = left, 1 = right

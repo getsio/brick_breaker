@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 from pygame import Surface
 
-class Game_Object(metaclass = ABCMeta):
+class GameObject(metaclass = ABCMeta):
   def __init__(self, x: int, y: int, color: list[int]) -> None:
     self.x = x
     self.y = y
