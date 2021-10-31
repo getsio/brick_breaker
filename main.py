@@ -3,12 +3,13 @@ import pygame.display
 import pygame.draw
 import pygame.time
 import pygame.event
+from src.ball import Ball
 from src.constants import SIZE
 from src.game_object import GameObject
 from src.character import GameCharacter
 
 class Game:
-  def __init__(self, fps: int, game_character: GameCharacter, game_objects: list[GameObject], fullscreen: bool = False) -> None:
+  def __init__(self, fps: int, game_character: GameCharacter, ball: Ball, game_objects: list[GameObject], fullscreen: bool = False) -> None:
     """This class represents a pygame window.
 
     Args:
@@ -19,9 +20,11 @@ class Game:
     pygame.init()
     self.fps: int = fps
     self.game_running: bool = True
+    self.started: bool = False
     self.size: tuple[int] = SIZE
     self.clock: pygame.time.Clock = pygame.time.Clock()
     self.game_character: GameCharacter = game_character
+    self.ball: Ball = ball
     self.game_objects: list[GameObject] = game_objects
     self.__init_screen(fullscreen)
 
@@ -74,8 +77,15 @@ class Game:
         pygame.display.set_mode(self.size, pygame.FULLSCREEN)
     elif ev.key == pygame.K_a:
       self.game_character.direction[0] = True
+      if not self.ball.moving:
+        self.ball.direction[3] = True
     elif ev.key == pygame.K_d:
       self.game_character.direction[1] = True
+      if not self.ball.moving:
+        self.ball.direction[1] = True
+    elif ev.key == pygame.K_SPACE:
+      self.started = True
+      self.ball.direction[0] = True
 
   def __check_keyup_events(self, ev: pygame.event.Event) -> None:
     """Checks what Key was released.
@@ -85,11 +95,17 @@ class Game:
     """
     if ev.key == pygame.K_a:
       self.game_character.direction[0] = False
+      if not self.ball.moving:
+        self.ball.direction[3] = False
     elif ev.key == pygame.K_d:
       self.game_character.direction[1] = False
+      if not self.ball.moving:
+        self.ball.direction[1] = False
 
   def update(self):
     self.game_character.update()
+    self.move_ball()
+    self.ball.update()
 
     for game_object in self.game_objects:
       game_object.update()
@@ -97,13 +113,19 @@ class Game:
   def draw(self):
     self.screen.fill((0, 0, 0))
     self.game_character.draw(self.screen)
+    self.ball.draw(self.screen)
     for game_object in self.game_objects:
         game_object.draw(self.screen)
     
     pygame.display.flip()
 
+  def move_ball(self):
+    if not self.started:
+      self.ball.position(self.game_character)
+
 if __name__ == '__main__':
-  character = GameCharacter([255, 255, 255])
+  character = GameCharacter()
+  ball = Ball()
   game_objects = []
-  game = Game(60, character, game_objects)
+  game = Game(60, character, ball, game_objects)
   game.run()

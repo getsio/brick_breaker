@@ -8,5 +8,10 @@ class GameObject(metaclass = ABCMeta):
     self.color = color
 
   @abstractmethod
+  def update(self):
+    pass
+
+  @abstractmethod
   def draw(self, screen: Surface):
     pass
+  
