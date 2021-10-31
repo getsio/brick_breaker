@@ -3,11 +3,11 @@ import pygame.display
 import pygame.draw
 import pygame.time
 import pygame.event
+from src.game_object import Game_Object
 from src.character import GameCharacter
 
-
 class Game:
-  def __init__(self, fps: int, size: tuple[int], fullscreen: bool = False) -> None:
+  def __init__(self, fps: int, size: tuple[int], game_objects: list[Game_Object], fullscreen: bool = False) -> None:
     """This class represents a pygame window.
 
     Args:
@@ -20,6 +20,7 @@ class Game:
     self.game_running: bool = True
     self.size: tuple[int] = size
     self.clock: pygame.time.Clock = pygame.time.Clock()
+    self.game_objects: list[Game_Object] = game_objects
     self.__init_screen(fullscreen)
 
   def run(self) -> None:
@@ -27,6 +28,7 @@ class Game:
     """
     while self.game_running:
       self.__check_game_events(pygame.event.get())
+      self.draw()
       self.clock.tick(self.fps)
 
   def __init_screen(self, fullscreen: bool) -> None:
@@ -76,6 +78,15 @@ class Game:
     """
     pass
 
+  def draw(self):
+    self.screen.fill((0, 0, 0))
+    for game_object in self.game_objects:
+        game_object.draw(self.screen)
+    
+    pygame.display.flip()
+
 if __name__ == '__main__':
-  game = Game(60, (1200, 800))
+  character = GameCharacter(10, 10, [255, 255, 255], 100, 10)
+  game_objects = [character]
+  game = Game(60, (1200, 800), game_objects)
   game.run()
