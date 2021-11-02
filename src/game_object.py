@@ -1,11 +1,10 @@
 from abc import ABCMeta, abstractmethod
-from pygame import Surface
+from pygame import Surface, Vector2
 
 class GameObject(metaclass = ABCMeta):
   def __init__(self, x: int, y: int, color: list[int]) -> None:
-    self.x = x
-    self.y = y
-    self.color = color
+    self.coords: Vector2 = Vector2(x, y)
+    self.color: list[int] = color
 
   @abstractmethod
   def update(self):
