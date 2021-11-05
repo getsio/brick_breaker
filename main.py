@@ -41,6 +41,9 @@ class Game:
       self.draw()
       self.clock.tick(self.fps)
 
+      if self.ball.check_bottom_hit():
+        self.game_running = False
+
   def __init_screen(self, fullscreen: bool) -> None:
     """Initializes the screen of the game.
 
@@ -72,10 +75,13 @@ class Game:
 
     if keys[K_SPACE] and not self.ball.moving:
       self.ball.moving = True
-      move_acceleration = self.game_character.acceleration.x
+      if self.game_character.can_accelerate():
+        move_acceleration = self.game_character.acceleration.x
+      else:
+        move_acceleration = 0
       self.ball.acceleration.update(move_acceleration, -BALL_MOVESPEED)
 
-  def update(self):
+  def update(self) -> None:
     self.game_character.update()
     self.move_ball()
     self.ball.update()
@@ -83,7 +89,7 @@ class Game:
     for game_object in self.game_objects:
       game_object.update()
 
-  def draw(self):
+  def draw(self) -> None:
     self.screen.fill((0, 0, 0))
     self.game_character.draw(self.screen)
     self.ball.draw(self.screen)
@@ -92,12 +98,12 @@ class Game:
     
     pygame.display.flip()
 
-  def move_ball(self):
-    self.ball.position(self.game_character)
+  def move_ball(self) -> None:
+    self.ball.position()
 
 if __name__ == '__main__':
   character = GameCharacter()
-  ball = Ball()
+  ball = Ball(character)
   game_objects = []
   game = Game(60, character, ball, game_objects)
   game.run()

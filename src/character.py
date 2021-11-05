@@ -19,20 +19,38 @@ class GameCharacter(GameObject):
     self.coords.y = SIZE[1] - 100
 
     self.form = (self.coords.x, self.coords.y, self.side_a, self.side_b)
+    self.collision_line: tuple[int] = (self.coords.x, self.coords.y, 
+      self.coords.x + self.side_a, self.coords.y)
+    
 
   def update(self) -> None:
     self.__move()
 
   def draw(self, screen: Surface) -> None:
-    pygame.draw.rect(screen, self.color, self.form)
+    self.game_object = pygame.draw.rect(screen, self.color, self.form)
 
   def __move(self):
     self.coords += self.acceleration
     self.__correct()
     self.form = (self.coords.x, self.coords.y, self.side_a, self.side_b)
+    self.collision_line: tuple[int] = (self.coords.x, self.coords.y, 
+      self.coords.x + self.side_a, self.coords.y)
 
   def __correct(self):
     if self.coords.x < 0:
-        self.coords.x = 0
+      self.coords.x = 0
+      self.__reset_acceleration()
     elif self.coords.x > SIZE[0] - self.side_a:
-        self.coords.x = SIZE[0] - self.side_a
+      self.__reset_acceleration()
+      self.coords.x = SIZE[0] - self.side_a
+
+  def __reset_acceleration(self) -> None:
+    self.acceleration.update(0, 0)
+  
+  def can_accelerate(self) -> bool:
+    if self.coords.x <= 0:
+      return False
+    elif self.coords.x >= SIZE[0] - self.side_a:
+      return False
+    else:
+      return True

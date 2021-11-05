@@ -1,4 +1,3 @@
-from typing import Sized
 import pygame
 from pygame import Surface, Vector2, constants
 import pygame.display
@@ -9,39 +8,42 @@ from src.constants import SIZE, BALL_LENGTH, BALL_HEIGTH, BALL_MOVESPEED, BALL_C
 from src.game_object import GameObject
 
 class Ball(GameObject):
-  def __init__(self) -> None:
+  def __init__(self, game_character) -> None:
     super().__init__(0, 0, BALL_COLOR)
     self.acceleration = Vector2(BALL_MOVESPEED, BALL_MOVESPEED)
     self.side_a: int = BALL_LENGTH
     self.side_b: int = BALL_HEIGTH
     self.form: tuple[int] = None
     self.moving: bool = False
+    self.game_character: GameCharacter = game_character
     self.init()
 
-  def init(self):
+  def init(self) -> None:
     self.coords.x = (SIZE[0] / 2) - (self.side_a / 2)
     self.coords.y = SIZE[1] - 120
 
     self.form = (self.coords.x, self.coords.y, self.side_a, self.side_b)
 
-  def update(self):
+  def update(self) -> None:
     self.__move()
 
-  def draw(self, screen: Surface):
-    pygame.draw.ellipse(screen, self.color, self.form)
+  def draw(self, screen: Surface) -> None:
+    self.game_object = pygame.draw.ellipse(screen, self.color, self.form)
+    self.__check_player_collision()
 
-  def __move(self):
+  def __move(self) -> None:
     if self.moving:
-      self.coords += self.acceleration
       self.__correct()
+      self.coords += self.acceleration
       self.form = (self.coords.x, self.coords.y, self.side_a, self.side_b)
 
-  def position(self, char: GameCharacter):
+  def position(self) -> None:
     if not self.moving:
-      self.coords.x = char.coords.x + (char.side_a / 2) - (self.side_a / 2)
+      self.coords.x = (self.game_character.coords.x + 
+        (self.game_character.side_a / 2) - (self.side_a / 2))
       self.form = (self.coords.x, self.coords.y, self.side_a, self.side_b)
 
-  def __correct(self):
+  def __correct(self) -> None:
     if self.coords.x < 0:
       self.coords.x = 0
       self.__direction_x()
@@ -56,8 +58,23 @@ class Ball(GameObject):
       self.coords.y = SIZE[1] - self.side_b
       self.__direction_y()
 
-  def __direction_x(self):
+  def __direction_x(self) -> None:
     self.acceleration.x = self.acceleration.x * -1 + 1
 
-  def __direction_y(self):
+  def __direction_y(self) -> None:
     self.acceleration.y = self.acceleration.y * -1 + 1
+
+  def __game_character_hit(self) -> None:
+    self.acceleration.y = self.acceleration.y * -1 + 1
+    self.acceleration.x = (self.game_character.acceleration.x + 
+      self.acceleration.x) / 2
+
+  def __check_player_collision(self) -> None:
+    clipped_line = self.game_object.clipline(self.game_character.collision_line)
+    if clipped_line:
+      self.__game_character_hit()
+  
+  def check_bottom_hit(self) -> bool:
+    if self.coords.y > self.game_character.coords.y:
+      return True
+    return False
