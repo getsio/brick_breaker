@@ -7,10 +7,11 @@ import pygame.event
 import pygame.key
 from src.constants import BALL_MOVESPEED
 from src.constants import CHAR_MOVESPEED
-from src.ball import Ball
-from src.constants import SIZE
+from src.constants import SIZE, BRICK_COLOR_1
 from src.game_object import GameObject
 from src.character import GameCharacter
+from src.ball import Ball
+from src.bricks import Brick
 
 class Game:
   def __init__(self, fps: int, game_character: GameCharacter, ball: Ball, game_objects: list[GameObject], fullscreen: bool = False) -> None:
@@ -104,6 +105,8 @@ class Game:
 if __name__ == '__main__':
   character = GameCharacter()
   ball = Ball(character)
-  game_objects = []
+  brick = Brick(10, 10, BRICK_COLOR_1, 5)
+
+  game_objects = [brick]
   game = Game(60, character, ball, game_objects)
   game.run()
