@@ -5,6 +5,7 @@ import pygame.draw
 import pygame.time
 import pygame.event
 import pygame.key
+from src.level import Level
 from src.constants import BALL_MOVESPEED
 from src.constants import CHAR_MOVESPEED
 from src.constants import SIZE, BRICK_COLOR_1
@@ -42,8 +43,8 @@ class Game:
       self.draw()
       self.clock.tick(self.fps)
 
-      if self.ball.check_bottom_hit():
-        self.game_running = False
+      #if self.ball.check_bottom_hit():
+      #  self.game_running = False
 
   def __init_screen(self, fullscreen: bool) -> None:
     """Initializes the screen of the game.
@@ -88,14 +89,17 @@ class Game:
     self.ball.update()
 
     for game_object in self.game_objects:
-      game_object.update()
+      if not game_object.living():
+        self.game_objects.remove(game_object)
 
   def draw(self) -> None:
     self.screen.fill((0, 0, 0))
     self.game_character.draw(self.screen)
-    self.ball.draw(self.screen)
+
     for game_object in self.game_objects:
         game_object.draw(self.screen)
+
+    self.ball.draw(self.screen)
     
     pygame.display.flip()
 
@@ -104,9 +108,14 @@ class Game:
 
 if __name__ == '__main__':
   character = GameCharacter()
-  ball = Ball(character)
-  brick = Brick(10, 10, BRICK_COLOR_1, 5)
 
-  game_objects = [brick]
+  brick1 = Brick(10, 10, BRICK_COLOR_1, 1)
+  brick2 = Brick(SIZE[0] - 100, 10, BRICK_COLOR_1, 1)
+  game_objects = [brick1, brick2]
+
+  ball = Ball(character, game_objects)
+
   game = Game(60, character, ball, game_objects)
+
+  level = Level(100, 90)
   game.run()

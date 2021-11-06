@@ -4,6 +4,7 @@ import pygame.display
 import pygame.draw
 import pygame.time
 from src.constants import SIZE, CHAR_LENGTH, CHAR_HEIGTH, CHAR_MOVESPEED, CHAR_COLOR
+from src.constants import SCREEN_COLOR
 from src.game_object import GameObject
 
 class GameCharacter(GameObject):
@@ -27,6 +28,9 @@ class GameCharacter(GameObject):
     self.__move()
 
   def draw(self, screen: Surface) -> None:
+    start_pos = (self.collision_line[0], self.collision_line[1])
+    end_pos = (self.collision_line[2], self.collision_line[3])
+    self.line = pygame.draw.line(screen, SCREEN_COLOR, start_pos, end_pos, 5)
     self.game_object = pygame.draw.rect(screen, self.color, self.form)
 
   def __move(self):
