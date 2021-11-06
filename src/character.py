@@ -30,7 +30,7 @@ class GameCharacter(GameObject):
   def draw(self, screen: Surface) -> None:
     start_pos = (self.collision_line[0], self.collision_line[1])
     end_pos = (self.collision_line[2], self.collision_line[3])
-    self.line = pygame.draw.line(screen, SCREEN_COLOR, start_pos, end_pos, 5)
+    self.line = pygame.draw.line(screen, SCREEN_COLOR, start_pos, end_pos, 8)
     self.game_object = pygame.draw.rect(screen, self.color, self.form)
 
   def __move(self):

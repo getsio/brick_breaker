@@ -68,9 +68,9 @@ class Ball(GameObject):
     self.acceleration.y = self.acceleration.y * -1 + 1
 
   def __game_character_hit(self) -> None:
-    self.acceleration.y = self.acceleration.y * -1 + 1
+    self.acceleration.y = BALL_MOVESPEED * -1
     self.acceleration.x = (self.game_character.acceleration.x + 
-      self.acceleration.x) / 2
+      self.acceleration.x) / 4
 
   def __check_player_collision(self) -> None:
     if self.game_object.colliderect(self.game_character.line):

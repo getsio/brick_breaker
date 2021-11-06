@@ -42,5 +42,5 @@ class Brick(GameObject):
     for coll_line in coll_lines:
       start_pos = (coll_line[0], coll_line[1])
       end_pos = (coll_line[2], coll_line [3])
-      lines.append(pygame.draw.line(screen, SCREEN_COLOR, start_pos, end_pos, 3))
+      lines.append(pygame.draw.line(screen, SCREEN_COLOR, start_pos, end_pos, 5))
     return lines

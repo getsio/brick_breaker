@@ -78,7 +78,7 @@ class Game:
     if keys[K_SPACE] and not self.ball.moving:
       self.ball.moving = True
       if self.game_character.can_accelerate():
-        move_acceleration = self.game_character.acceleration.x
+        move_acceleration = self.game_character.acceleration.x / 3
       else:
         move_acceleration = 0
       self.ball.acceleration.update(move_acceleration, -BALL_MOVESPEED)
@@ -111,11 +111,10 @@ if __name__ == '__main__':
 
   brick1 = Brick(10, 10, BRICK_COLOR_1, 1)
   brick2 = Brick(SIZE[0] - 100, 10, BRICK_COLOR_1, 1)
-  game_objects = [brick1, brick2]
+  level = Level(15, 15)
+  game_objects = level.bricks
 
   ball = Ball(character, game_objects)
-
   game = Game(60, character, ball, game_objects)
 
-  level = Level(100, 90)
   game.run()
